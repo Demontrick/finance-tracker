@@ -50,7 +50,7 @@ Mobile-first responsive refinements
 
 Author
 Aman Malik
-GitHub ·  linkedin.com/in/aman-malik-b7b586242
+https://github.com/Demontrick/finance-tracker.git ·  linkedin.com/in/aman-malik-b7b586242
 
 How to Run
 
