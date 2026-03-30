@@ -42,15 +42,18 @@ Income and expense bars use distinct semantic colors — green and red — match
 
 What I'd Add Next
 
-Storybook integration for designer handoff and component isolation
-Unit tests per component with React Testing Library
-localStorage persistence for session continuity
-Monthly breakdown view with category tagging
-Mobile-first responsive refinements
+- Storybook integration for designer handoff 
+  and component isolation
+- Unit tests per component with React Testing Library
+- localStorage persistence for session continuity
+- Monthly breakdown view with category tagging
+- Webpack migration from Vite for production 
+  bundler alignment with enterprise stack
+- Mobile-first responsive refinements
 
 Author
 Aman Malik
-GitHub · LinkedIn
+https://github.com/Demontrick/finance-tracker.git ·  linkedin.com/in/aman-malik-b7b586242
 
 How to Run
 
