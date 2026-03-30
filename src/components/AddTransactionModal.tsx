@@ -1,197 +1,181 @@
 import { useState } from "react"
+import styled from "styled-components"
+import { theme } from "../theme/tokens"
 import type { Transaction } from "../models/Transaction"
 
 type Props = {
-
-onAdd:(transaction:Transaction)=>void
-
-onClose:()=>void
-
-existing?:Transaction
-
+  onAdd: (transaction: Transaction) => void
+  onClose: () => void
+  existing?: Transaction
 }
 
-function AddTransactionModal({onAdd,onClose,existing}:Props){
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+`
 
-const [title,setTitle] =
-useState(existing?.title || "")
+const Modal = styled.div`
+  background: ${theme.colors.surface};
+  padding: ${theme.spacing.lg};
+  border-radius: ${theme.radius.lg};
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.xs};
+`
 
-const [amount,setAmount] =
-useState(existing?.amount || 0)
+const ModalTitle = styled.h2`
+  margin: 0 0 ${theme.spacing.xs} 0;
+  font-size: 18px;
+  color: ${theme.colors.text.primary};
+`
 
-const [type,setType] =
-useState(existing?.type || "Expense")
+const Input = styled.input`
+  width: 100%;
+  padding: 10px 12px;
+  background: ${theme.colors.background};
+  border: 1px solid #2d3748;
+  border-radius: ${theme.radius.md};
+  color: ${theme.colors.text.primary};
+  font-size: 14px;
+  box-sizing: border-box;
 
-const [status,setStatus] =
-useState(existing?.status || "Pending")
+  &:focus {
+    outline: none;
+    border-color: ${theme.colors.primary};
+  }
 
-const handleSubmit = ()=>{
+  &::placeholder {
+    color: ${theme.colors.text.secondary};
+  }
+`
 
-if(!title || amount<=0) return
+const Select = styled.select`
+  width: 100%;
+  padding: 10px 12px;
+  background: ${theme.colors.background};
+  border: 1px solid #2d3748;
+  border-radius: ${theme.radius.md};
+  color: ${theme.colors.text.primary};
+  font-size: 14px;
+  box-sizing: border-box;
+  cursor: pointer;
 
-const newTransaction:Transaction = {
+  &:focus {
+    outline: none;
+    border-color: ${theme.colors.primary};
+  }
+`
 
-id: existing ? existing.id : Date.now(),
+const ActionRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: ${theme.spacing.xs};
+`
 
-title,
+const ModalButton = styled.button<{ $variant: "cancel" | "confirm" }>`
+  background: ${({ $variant }) =>
+    $variant === "confirm" ? theme.colors.primary : theme.colors.surface};
+  border: ${({ $variant }) =>
+    $variant === "cancel" ? `1px solid #2d3748` : "none"};
+  color: ${theme.colors.text.primary};
+  padding: 9px 18px;
+  border-radius: ${theme.radius.md};
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
 
-amount,
+  &:hover {
+    opacity: 0.85;
+  }
+`
 
-type,
+function AddTransactionModal({ onAdd, onClose, existing }: Props) {
+  const [title, setTitle] = useState(existing?.title || "")
+  const [amount, setAmount] = useState(existing?.amount || 0)
+  const [type, setType] = useState<"Income" | "Expense">(
+    existing?.type || "Expense"
+  )
+  const [status, setStatus] = useState<"Pending" | "Completed">(
+    existing?.status || "Pending"
+  )
 
-status,
+  const handleSubmit = () => {
+    if (!title || amount <= 0) return
 
-date: existing
-? existing.date
-: new Date().toISOString().split("T")[0]
+    const newTransaction: Transaction = {
+      id: existing ? existing.id : Date.now(),
+      title,
+      amount,
+      type,
+      status,
+      date: existing
+        ? existing.date
+        : new Date().toISOString().split("T")[0]
+    }
 
-}
+    onAdd(newTransaction)
+    onClose()
+  }
 
-onAdd(newTransaction)
+  return (
+    <Overlay onClick={onClose}>
+      <Modal onClick={(e) => e.stopPropagation()}>
+        <ModalTitle>
+          {existing ? "Edit Transaction" : "Add Transaction"}
+        </ModalTitle>
 
-onClose()
+        <Input
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
-}
+        <Input
+          type="number"
+          placeholder="Amount"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+        />
 
-return(
+        <Select
+          value={type}
+          onChange={(e) => setType(e.target.value as "Income" | "Expense")}
+        >
+          <option value="Expense">Expense</option>
+          <option value="Income">Income</option>
+        </Select>
 
-<div style={{
+        <Select
+          value={status}
+          onChange={(e) =>
+            setStatus(e.target.value as "Pending" | "Completed")
+          }
+        >
+          <option value="Pending">Pending</option>
+          <option value="Completed">Completed</option>
+        </Select>
 
-position:"fixed",
-top:0,
-left:0,
-width:"100%",
-height:"100%",
-background:"rgba(0,0,0,0.6)",
-
-display:"flex",
-justifyContent:"center",
-alignItems:"center"
-
-}}>
-
-<div style={{
-
-background:"#111827",
-padding:"30px",
-borderRadius:"12px",
-width:"320px"
-
-}}>
-
-<h2>
-
-{existing ? "Edit Transaction" : "Add Transaction"}
-
-</h2>
-
-<input
-placeholder="Title"
-value={title}
-onChange={e=>setTitle(e.target.value)}
-
-style={{
-width:"100%",
-marginBottom:"10px",
-padding:"8px"
-}}
-/>
-
-<input
-type="number"
-value={amount}
-onChange={e=>setAmount(Number(e.target.value))}
-
-style={{
-width:"100%",
-marginBottom:"10px",
-padding:"8px"
-}}
-/>
-
-<select
-value={type}
-onChange={e=>setType(e.target.value)}
-
-style={{
-width:"100%",
-marginBottom:"10px",
-padding:"8px"
-}}
->
-
-<option>Expense</option>
-<option>Income</option>
-
-</select>
-
-<select
-value={status}
-onChange={e=>setStatus(e.target.value)}
-
-style={{
-width:"100%",
-marginBottom:"15px",
-padding:"8px"
-}}
->
-
-<option>Pending</option>
-<option>Completed</option>
-
-</select>
-
-<div style={{
-
-display:"flex",
-justifyContent:"space-between"
-
-}}>
-
-<button
-onClick={onClose}
-
-style={{
-
-background:"#1f2937",
-border:"none",
-color:"white",
-padding:"8px 15px",
-borderRadius:"8px"
-
-}}
->
-
-Cancel
-
-</button>
-
-<button
-onClick={handleSubmit}
-
-style={{
-
-background:"#7c3aed",
-border:"none",
-color:"white",
-padding:"8px 15px",
-borderRadius:"8px"
-
-}}
->
-
-{existing ? "Save" : "Add"}
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-)
-
+        <ActionRow>
+          <ModalButton $variant="cancel" onClick={onClose}>
+            Cancel
+          </ModalButton>
+          <ModalButton $variant="confirm" onClick={handleSubmit}>
+            {existing ? "Save" : "Add"}
+          </ModalButton>
+        </ActionRow>
+      </Modal>
+    </Overlay>
+  )
 }
 
 export default AddTransactionModal

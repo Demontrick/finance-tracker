@@ -1,89 +1,65 @@
+import styled from "styled-components"
+import { theme } from "../theme/tokens"
 import type { Transaction } from "../models/Transaction"
 import TransactionRow from "./TransactionRow"
 
 type Props = {
-
-transactions: Transaction[]
-
-onDelete:(id:number)=>void
-
-onEdit:(transaction:Transaction)=>void
-
+  transactions: Transaction[]
+  onDelete: (id: number) => void
+  onEdit: (transaction: Transaction) => void
 }
 
-function TransactionList({transactions,onDelete,onEdit}:Props){
+const Wrapper = styled.div`
+  background: ${theme.colors.surface};
+  padding: ${theme.spacing.lg};
+  border-radius: ${theme.radius.lg};
+`
 
-return(
+const ListTitle = styled.h2`
+  margin: 0 0 ${theme.spacing.md} 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: ${theme.colors.text.primary};
+`
 
-<div style={{
+const EmptyState = styled.div`
+  text-align: center;
+  padding: ${theme.spacing.lg};
+  color: ${theme.colors.text.secondary};
+`
 
-background:"#111827",
-padding:"25px",
-borderRadius:"12px"
+const EmptyTitle = styled.h3`
+  margin-bottom: ${theme.spacing.xs};
+  color: ${theme.colors.text.secondary};
+`
 
-}}>
+const EmptyText = styled.p`
+  margin: 0;
+  font-size: 14px;
+`
 
-<h2 style={{
+function TransactionList({ transactions, onDelete, onEdit }: Props) {
+  return (
+    <Wrapper>
+      <ListTitle>Transactions ({transactions.length})</ListTitle>
 
-marginTop:0,
-marginBottom:"20px"
-
-}}>
-
-Transactions ({transactions.length})
-
-</h2>
-
-{transactions.length === 0 ? (
-
-<div style={{
-
-textAlign:"center",
-
-padding:"30px",
-
-color:"#9ca3af"
-
-}}>
-
-<h3 style={{marginBottom:"10px"}}>
-
-No transactions found
-
-</h3>
-
-<p style={{margin:0}}>
-
-Add a transaction or change filters
-
-</p>
-
-</div>
-
-) : (
-
-transactions.map(t=>(
-
-<TransactionRow
-
-key={t.id}
-
-transaction={t}
-
-onDelete={onDelete}
-
-onEdit={onEdit}
-
-/>
-
-))
-
-)}
-
-</div>
-
-)
-
+      {transactions.length === 0 ? (
+        <EmptyState>
+          <EmptyTitle>No transactions found</EmptyTitle>
+          <EmptyText>Add a transaction or change filters</EmptyText>
+        </EmptyState>
+      ) : (
+        transactions.map((t) => (
+          <TransactionRow
+            key={t.id}
+            transaction={t}
+            onDelete={onDelete}
+            onEdit={onEdit}
+          />
+        ))
+      )}
+    </Wrapper>
+  )
 }
 
 export default TransactionList

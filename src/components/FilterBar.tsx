@@ -1,79 +1,60 @@
+import styled from "styled-components"
+import { theme } from "../theme/tokens"
+
+type FilterOption = "All" | "Income" | "Expense" | "Pending" | "Completed"
+
 type Props = {
-
-filter:string
-
-setFilter:(value:string)=>void
-
+  filter: string
+  setFilter: (value: string) => void
 }
 
-function FilterBar({filter,setFilter}:Props){
+const Wrapper = styled.div`
+  display: flex;
+  gap: ${theme.spacing.xs};
+  margin-bottom: ${theme.spacing.md};
+  flex-wrap: wrap;
+`
 
-const buttonStyle = (name:string)=>({
+const FilterButton = styled.button<{ $active: boolean }>`
+  padding: 8px 14px;
+  border-radius: ${theme.radius.md};
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s ease, transform 0.1s ease;
+  background: ${({ $active }) =>
+    $active ? theme.colors.primary : theme.colors.surface};
+  color: ${theme.colors.text.primary};
 
-padding:"8px 14px",
-borderRadius:"8px",
-border:"none",
-cursor:"pointer",
+  &:hover {
+    background: ${({ $active }) =>
+      $active ? theme.colors.primary : "#2d3f55"};
+  }
 
-background:
-filter === name
-? "#7c3aed"
-: "#1f2937",
+  &:active {
+    transform: scale(0.97);
+  }
+`
 
-color:"white"
+const FILTERS: FilterOption[] = [
+  "All", "Income", "Expense", "Pending", "Completed"
+]
 
-})
-
-return(
-
-<div style={{
-
-display:"flex",
-gap:"10px",
-marginBottom:"20px",
-flexWrap:"wrap"
-
-}}>
-
-<button
-style={buttonStyle("All")}
-onClick={()=>setFilter("All")}
->
-All
-</button>
-
-<button
-style={buttonStyle("Income")}
-onClick={()=>setFilter("Income")}
->
-Income
-</button>
-
-<button
-style={buttonStyle("Expense")}
-onClick={()=>setFilter("Expense")}
->
-Expense
-</button>
-
-<button
-style={buttonStyle("Pending")}
-onClick={()=>setFilter("Pending")}
->
-Pending
-</button>
-
-<button
-style={buttonStyle("Completed")}
-onClick={()=>setFilter("Completed")}
->
-Completed
-</button>
-
-</div>
-
-)
-
+function FilterBar({ filter, setFilter }: Props) {
+  return (
+    <Wrapper>
+      {FILTERS.map((name) => (
+        <FilterButton
+          key={name}
+          $active={filter === name}
+          onClick={() => setFilter(name)}
+        >
+          {name}
+        </FilterButton>
+      ))}
+    </Wrapper>
+  )
 }
 
 export default FilterBar

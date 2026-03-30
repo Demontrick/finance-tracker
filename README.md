@@ -1,79 +1,60 @@
-# Personal Finance Tracker
+Revolut-Inspired Finance Dashboard
+A frontend POC built to demonstrate design-consistent, typed React components using Revolut's exact tech stack — focused on the engineering problems that matter at scale: visual consistency, designer collaboration, and component reusability.
 
-A modern personal finance tracker built with React and TypeScript that allows users to track income and expenses with a clean dashboard UI.
+Why I Built This
+Scaling a frontend across a fast-moving, globally distributed team creates a core problem — design drift. Components get implemented in isolation, magic numbers get scattered across files, and consistency breaks silently over time.
+This POC explores how a centralized theme layer + typed component contracts can enforce visual consistency without slowing down feature velocity. Every color, spacing value, and border radius in this codebase traces back to a single source of truth in tokens.ts.
 
-## Features
+Tech Stack
+Mirrors Revolut's frontend stack exactly:
 
-* Add income and expense transactions
-* Financial overview chart
-* Transaction history list
-* Real-time balance calculation
-* Clean component architecture
-* Currency formatting utilities
-* Responsive dashboard layout
+React + TypeScript
+styled-components
+Recharts
+Vite
 
-## Tech Stack
-
-* React
-* TypeScript
-* Recharts (data visualization)
-* CSS / Inline styling
-* Vite
-
-## Project Structure
-
+Architecture
 src/
-components/
-FinanceChart.tsx
-TransactionList.tsx
-TransactionRow.tsx
+├── theme/
+│   └── tokens.ts         — single source of truth for all design tokens
+├── components/
+│   ├── SummaryCard       — themeable, typed balance/income/expense cards
+│   ├── TransactionRow    — variant-based action buttons, CSS hover states
+│   ├── TransactionList   — empty state handling, clean composition
+│   ├── FilterBar         — active state via props, mapped from typed array
+│   ├── AddTransactionModal — typed union state, overlay dismiss pattern
+│   └── FinanceChart      — per-bar color tokens via Recharts Cell
+├── models/               — shared Transaction type contract
+├── utils/                — currency formatting
+└── services/             — mock data layer
 
-utils/
-format.ts
+Design Decisions
+Token-based theming over inline styles
+All design values live in tokens.ts. This means a brand color change propagates everywhere in one edit — the same guarantee a real design system gives designers when they update a token in Figma.
+Typed component props over raw strings
+Union types like "Income" | "Expense" and "Pending" | "Completed" are enforced at the component boundary. This prevents silent mismatches between what designers spec and what engineers implement.
+Variant-based components over duplicated styles
+ActionButton takes a $variant prop instead of two separate button components. ModalButton follows the same pattern. One component, multiple states — easier for designers to reason about and easier to maintain.
+CSS hover states over DOM mutation
+Hover effects use styled-components &:hover instead of onMouseEnter/onMouseLeave DOM manipulation. Keeps React's rendering model clean and makes styles inspectable in DevTools.
+Per-bar chart colors via Cell
+Income and expense bars use distinct semantic colors — green and red — matching the same tokens used in SummaryCard and TransactionRow. Visual language stays consistent across the entire UI, not just within individual components.
 
-types/
-Transaction.ts
+What I'd Add Next
 
-App.tsx
-Dashboard.tsx
+Storybook integration for designer handoff and component isolation
+Unit tests per component with React Testing Library
+localStorage persistence for session continuity
+Monthly breakdown view with category tagging
+Mobile-first responsive refinements
 
-## Installation
-
-Clone the repository:
-
-git clone https://github.com/YOUR_USERNAME/finance-tracker.git
-
-Navigate into project:
-
-cd finance-tracker
-
-Install dependencies:
-
-npm install
-
-Run development server:
-
-npm run dev
-
-## Build
-
-To create a production build:
-
-npm run build
-
-## Future Improvements
-
-* Local storage persistence
-* Transaction categories
-* Edit transactions
-* Mobile responsive improvements
-* Dark / Light theme toggle
-* Monthly analytics
-
-## Author
-
+Author
 Aman Malik
+GitHub · LinkedIn
 
-## License
+How to Run
 
-This project is open source and available under the MIT License.
+bashgit clone https://github.com/Demontrick/finance-tracker.git
+cd finance-tracker
+npm install
+npm run dev

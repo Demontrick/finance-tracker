@@ -1,103 +1,93 @@
+import styled from "styled-components"
+import { theme } from "../theme/tokens"
 import {
-BarChart,
-Bar,
-XAxis,
-YAxis,
-Tooltip,
-ResponsiveContainer,
-CartesianGrid
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Cell
 } from "recharts"
 
 type Props = {
-income:number
-expenses:number
+  income: number
+  expenses: number
 }
 
-function FinanceChart({income,expenses}:Props){
+const Wrapper = styled.div`
+  background: ${theme.colors.surface};
+  padding: ${theme.spacing.lg};
+  border-radius: ${theme.radius.lg};
+  margin-bottom: ${theme.spacing.lg};
+`
 
-const data = [
+const ChartTitle = styled.h2`
+  margin: 0 0 ${theme.spacing.md} 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: ${theme.colors.text.primary};
+`
 
-{
-name:"Income",
-amount:income
-},
+const ChartWrapper = styled.div`
+  width: 100%;
+  height: 300px;
+`
 
-{
-name:"Expenses",
-amount:expenses
-}
+function FinanceChart({ income, expenses }: Props) {
+  const data = [
+    { name: "Income", amount: income },
+    { name: "Expenses", amount: expenses }
+  ]
 
-]
+  const barColors = [theme.colors.success, theme.colors.danger]
 
-return(
+  return (
+    <Wrapper>
+      <ChartTitle>Financial Overview</ChartTitle>
 
-<div style={{
+      <ChartWrapper>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data}>
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke={theme.colors.surface}
+            />
 
-background:"#111827",
-padding:"25px",
-borderRadius:"12px",
-marginBottom:"30px"
+            <XAxis
+              dataKey="name"
+              stroke={theme.colors.text.secondary}
+              tick={{ fill: theme.colors.text.secondary, fontSize: 13 }}
+            />
 
-}}>
+            <YAxis
+              stroke={theme.colors.text.secondary}
+              tick={{ fill: theme.colors.text.secondary, fontSize: 13 }}
+              tickFormatter={(value) => `$${value}`}
+            />
 
-<h2 style={{
-marginTop:0,
-marginBottom:"20px",
-fontSize:"20px",
-fontWeight:600
-}}>
-Financial Overview
-</h2>
+            <Tooltip
+              contentStyle={{
+                background: theme.colors.background,
+                border: `1px solid ${theme.colors.surface}`,
+                borderRadius: theme.radius.md,
+                color: theme.colors.text.primary
+              }}
+              formatter={(value) => [`$${value}`, "Amount"]}
+            />
 
-<div style={{
-width:"100%",
-height:"300px"
-}}>
+            <Bar dataKey="amount" radius={[8, 8, 0, 0]}>
+              {data.map((_, index) => (
+                <Cell key={index} fill={barColors[index]} />
+              ))}
+            </Bar>
 
-<ResponsiveContainer width="100%" height="100%">
-
-<BarChart data={data}>
-
-<CartesianGrid
-strokeDasharray="3 3"
-stroke="#374151"
-/>
-
-<XAxis
-dataKey="name"
-stroke="#9ca3af"
-/>
-
-<YAxis
-stroke="#9ca3af"
-tickFormatter={(value)=>`$${value}`}
-/>
-
-<Tooltip
-contentStyle={{
-background:"#1f2937",
-border:"none",
-borderRadius:"8px"
-}}
-formatter={(value)=>[`$${value}`,"Amount"]}
-/>
-
-<Bar
-dataKey="amount"
-radius={[8,8,0,0]}
-fill="#7c3aed"
-/>
-
-</BarChart>
-
-</ResponsiveContainer>
-
-</div>
-
-</div>
-
-)
-
+          </BarChart>
+        </ResponsiveContainer>
+      </ChartWrapper>
+    </Wrapper>
+  )
 }
 
 export default FinanceChart

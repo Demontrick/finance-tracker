@@ -1,51 +1,44 @@
+import styled from "styled-components"
+import { theme } from "../theme/tokens"
+import { formatCurrency } from "../utils/format"
+
 type Props = {
-
-title:string
-
-amount:number
-
-color?:string
-
+  title: string
+  amount: number
+  color?: string
 }
 
-function SummaryCard({title,amount,color}:Props){
+const Card = styled.div`
+  background: ${theme.colors.surface};
+  padding: ${theme.spacing.lg};
+  border-radius: ${theme.radius.lg};
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.xs};
+`
 
-return(
+const Label = styled.p`
+  margin: 0;
+  color: ${theme.colors.text.secondary};
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+`
 
-<div style={{
+const Amount = styled.h2<{ $color?: string }>`
+  margin: 0;
+  color: ${({ $color }) => $color || theme.colors.text.primary};
+  font-size: 28px;
+  font-weight: 700;
+`
 
-background:"#111827",
-padding:"22px",
-borderRadius:"12px"
-
-}}>
-
-<p style={{
-
-margin:0,
-color:"#9ca3af"
-
-}}>
-
-{title}
-
-</p>
-
-<h2 style={{
-
-marginTop:"10px",
-color: color || "white"
-
-}}>
-
-${amount}
-
-</h2>
-
-</div>
-
-)
-
+function SummaryCard({ title, amount, color }: Props) {
+  return (
+    <Card>
+      <Label>{title}</Label>
+      <Amount $color={color}>{formatCurrency(amount)}</Amount>
+    </Card>
+  )
 }
 
 export default SummaryCard
